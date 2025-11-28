@@ -157,7 +157,7 @@ If missing, download from [FDA FAERS portal](https://fis.fda.gov/extensions/FPD-
 
 ---
 
-## ▶️ Running the Program
+## Running the Program
 
 ### Method 1: PyCharm IDE
 1. Open `bcpnn.py`
@@ -369,12 +369,12 @@ BCPNN can optionally use prior knowledge through an `adr-drug.csv` file.
 
 ### What Results Mean
 
-✅ **What BCPNN Detects:**
+**What BCPNN Detects:**
 - Statistical associations between drugs and ADRs
 - Patterns that occur more often than random chance
 - Potential safety signals requiring investigation
 
-❌ **What BCPNN Does NOT Prove:**
+**What BCPNN Does NOT Prove:**
 - Causation (drug definitely causes the ADR)
 - Clinical diagnosis
 - Medical treatment recommendations
