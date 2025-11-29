@@ -413,6 +413,7 @@ start = time.time()
 
 
 Intent:
+
 This marks the start of the pipeline run. Everything below this line is the sequential workflow.
 
 2) Data Loading Functions (FAERS Ingestion Layer)
@@ -420,13 +421,16 @@ This marks the start of the pipeline run. Everything below this line is the sequ
 Both loading functions are located in bcpnn_data.py at line 3 and 16.
 
 drug_reports = bd.drug_data("./data/DRUG25Q3.txt")
+
 adr_reports  = bd.adr_data("./data/REAC25Q3.txt")
 
 
 Purpose:
+
 Reads FDA text dumps, splits using $, maps reportID → [drugs/ADRs].
 
 Intent:
+
 Use dictionaries for O(1) lookup when counting co-occurrence later.
 
 3) Matrix Construction (Drug vs ADR Frequency)
@@ -434,17 +438,24 @@ Use dictionaries for O(1) lookup when counting co-occurrence later.
 The contingency grid is generated in bcpnn.py at line 86 around the loops:
 
 drug_matrix[drug][adr] += 1
+
 drug_counts[drug]     += 1
+
 adr_counts[adr]       += 1
 
 
 What it’s doing:
+
 Building frequency counts that will later form 2×2 BCPNN table:
 
 a = drug+ADR
+
 b = drug only
+
 c = ADR only
+
 d = neither
+
 
 
 Intent:
@@ -460,10 +471,13 @@ read_parameters("./outputs/alpha.csv","./outputs/beta.csv","./outputs/gamma.csv"
 Located inside bcpnn.py at line 27.
 
 Intent:
+
 Brings in prior α/β/γ values so the model learns incrementally across runs.
 
 Reasoning:
+
 BCPNN is Bayesian – priors matter.
+
 First run = neutral. Next runs = knowledge reinforced.
 
 5) Core Signal Computation (BCPNN Brain)
@@ -476,10 +490,13 @@ signal_generated = bp.signal_output(a,b,c,d,g11,alp,bet,alp1,bet1)
 Function location: bcpnn_parameters.py line 50
 
 Role:
+
 Computes IC, variance, adjusted score, returns category:
+
 Weak / Medium / Strong / Negative.
 
 Intent:
+
 Statistically quantify suspicion level of every Drug-ADR pair.
 
 6) Output Writer & Data Persistence
@@ -490,9 +507,11 @@ write_out(a_parameters,b_parameters,g_parameters,"./outputs/alpha.csv",...)
 
 
 Effect:
+
 New priors replace previous ones → model improves continuously.
 
 Intent:
+
 Allows long-term pharmacovigilance monitoring rather than one-time analysis.
 
 7) User Query Interface (Manual Signal Check)
@@ -500,19 +519,24 @@ Allows long-term pharmacovigilance monitoring rather than one-time analysis.
 Interactive block at bottom of bcpnn.py at line 164,166:
 
 required_drug = input()
+
 required_adr  = input()
 
 
 Behavior:
+
 Instant lookup from computed signal list. Returns correlation strength.
 
 Intent:
+
 Give analyst real-time ability to inspect specific relationships.
 
 ## Summary:
 
 bcpnn_data.py → Loads raw FAERS data
+
 bcpnn.py      → Coordinates full BCPNN workflow
+
 bcpnn_parameters.py → Computes IC + signal strength
 
 
