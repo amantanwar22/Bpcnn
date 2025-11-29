@@ -402,6 +402,8 @@ In actual pharmacovigilance:
 
 This sample dataset mirrors these patterns.
 
+---
+
 
 ### Code Walkthrough
 
